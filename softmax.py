@@ -14,18 +14,22 @@ class Softmax:
     Returns a 1d numpy array containing the respective probability values.
     - input can be any array with any dimensions.
     '''
+    # print(input.shape)
     self.last_input_shape = input.shape
 
     input = input.flatten()
+    # print(input.shape, self.weights.shape)
     self.last_input = input
 
     input_len, nodes = self.weights.shape
 
     totals = np.dot(input, self.weights) + self.biases
+    # print(input.shape, self.weights.shape, totals.shape)
     self.last_totals = totals
 
     exp = np.exp(totals)
-    return exp / np.sum(exp, axis=0)
+    result = exp / np.sum(exp, axis=0)
+    return result
 
   def backprop(self, d_L_d_out, learn_rate):
     '''

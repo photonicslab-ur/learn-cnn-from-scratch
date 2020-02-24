@@ -3,14 +3,17 @@ import numpy as np
 from conv import Conv3x3
 from maxpool import MaxPool2
 from softmax import Softmax
+from keras.datasets import fashion_mnist
 
 # We only use the first 1k examples of each set in the interest of time.
 # Feel free to change this if you want.
-train_images = mnist.train_images()[:1000]
-train_labels = mnist.train_labels()[:1000]
-test_images = mnist.test_images()[:1000]
-test_labels = mnist.test_labels()[:1000]
+# train_images = mnist.train_images()[:1000]
+# train_labels = mnist.train_labels()[:1000]
+# test_images = mnist.test_images()[:1000]
+# test_labels = mnist.test_labels()[:1000]
 
+(train_images, train_labels), (test_images, test_labels) = fashion_mnist.load_data()
+print(train_images.shape, 'train')
 conv = Conv3x3(8)                  # 28x28x1 -> 26x26x8
 pool = MaxPool2()                  # 26x26x8 -> 13x13x8
 softmax = Softmax(13 * 13 * 8, 10) # 13x13x8 -> 10
@@ -42,8 +45,10 @@ def train(im, label, lr=.005):
   - label is a digit
   - lr is the learning rate
   '''
+  # print(im.shape, label, 'ada')
   # Forward
   out, loss, acc = forward(im, label)
+  # print(out, 'out')
 
   # Calculate initial gradient
   gradient = np.zeros(10)
@@ -72,10 +77,7 @@ for epoch in range(3):
   num_correct = 0
   for i, (im, label) in enumerate(zip(train_images, train_labels)):
     if i % 100 == 99:
-      print(
-        '[Step %d] Past 100 steps: Average Loss %.3f | Accuracy: %d%%' %
-        (i + 1, loss / 100, num_correct)
-      )
+      print('[Step %d] Past 100 steps: Average Loss %.3f | Accuracy: %d%%' % (i + 1, loss / 100, num_correct))
       loss = 0
       num_correct = 0
 
